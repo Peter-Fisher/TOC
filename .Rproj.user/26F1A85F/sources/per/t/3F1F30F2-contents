@@ -1,0 +1,9 @@
+library('usethis')
+library('devtools')
+
+load_all()
+document()
+build()
+check()
+
+#F:/Semester_1/GIS_MAP_Comparison/Final_Project/TOC_0.0-5.tar.gz

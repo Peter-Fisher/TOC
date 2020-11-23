@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1577570166579.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "814392851",
+    "id" : "250279B5",
+    "lastKnownWriteTime" : 1577751916,
+    "last_content_update" : 1577751916903,
+    "path" : "D:/TOC/TOC/R/TOCnosp.R",
+    "project_path" : "R/TOCnosp.R",
+    "properties" : {
+        "cursorPosition" : "24,89",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

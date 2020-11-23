@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1577751007450.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1886966014",
+    "id" : "4A7C5A6A",
+    "lastKnownWriteTime" : 1577568492,
+    "last_content_update" : 1577568492,
+    "path" : "D:/TOC/TOC/R/plotsTOC.R",
+    "project_path" : "R/plotsTOC.R",
+    "properties" : {
+        "cursorPosition" : "60,74",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

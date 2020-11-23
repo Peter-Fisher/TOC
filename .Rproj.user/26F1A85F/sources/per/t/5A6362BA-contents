@@ -1,0 +1,446 @@
+index <- raster("F:/Semester_1/GIS_MAP_Comparison/Final_Project/TerrSet/1971Landcover01_reclass_123.rst", package = "TOC")
+#index <- raster("F:/Semester_1/GIS_MAP_Comparison/Final_Project/Data/1971Landcover01_bool_Built_Dist.rst", package = "TOC")
+boolean <- raster("F:/Semester_1/GIS_MAP_Comparison/Final_Project/Data//1985Landcover01_bool_Built.rst", package = "TOC")
+mask <- raster("F:/Semester_1/GIS_MAP_Comparison/Final_Project/Data/1971Landcover01_bool_Built_Invers.rst", package = "TOC")
+#index <- raster(system.file("external/Prob_Map2.rst", package = "TOC"))
+#boolean <- raster(system.file("external/Change_Map2b.rst", package = "TOC"))
+#mask <- raster(system.file("external/MASK4.rst", package = "TOC"))
+
+
+nthres=NULL
+#thres = c(3,2,1)
+thres = NULL
+NAval=0
+P=NA
+Q=NA
+progress=FALSE
+#sort='DECREASE'
+sort='INCREASE'
+thresorder=TRUE
+ordinal=TRUE
+FirstThres=NULL
+LastThres=NULL
+Increment=NULL
+
+# extract cell values from the boolean and index maps
+boolval <- getValues(boolean)
+indval <- getValues(index)
+
+# extract cell values from the mask map if given
+if(!is.null(mask)) mask <- getValues(mask)
+
+# calculate population
+# mask out nodata cells in the index and boolean vectors if a mask vector is given
+if(!is.null(mask)){
+  mask[mask == NAval] <- NA
+  boolval <- boolval*mask
+}
+# extract total number of cells with ones and zeros in the boolean vector
+boolvals <- boolval[!is.na(boolval)]
+ones.bool <- sum(as.bit(boolvals))
+zeros.bool <- length(boolvals) - ones.bool
+
+validPixels <- ones.bool + zeros.bool
+
+population <- validPixels * res(index)[1] * res(index)[2]
+if(!is.na(P) & !is.na(Q)){
+  population <- P + Q
+}
+
+# extract map units for plotting purposes with plot.TOC
+units <- paste("square", strsplit(strsplit(CRSargs(crs(index)), "+units=")[[1]][2], " ")[[1]][1])
+
+boolval <- boolean
+# calculate population if not given
+if (is.null(population)){
+  if(!is.null(mask)){
+    mask[mask == NAval] <- NA
+    boolval <- boolean*mask
+  }
+  # extract total number of no NA cells
+  boolvals <- boolval[!is.na(boolval)]
+  population <- length(boolvals)
+  if(!is.na(P) & !is.na(Q)){
+    population <- P + Q
+  }
+}
+maskval <- mask
+# mask out nodata cells in the index and boolean vectors if a mask vector is given
+if(!is.null(maskval)){
+  maskval[maskval == NAval] <- NA
+  indval <- indval*maskval
+  boolval <- boolval*maskval
+}
+if(is.null(ones.bool) | is.null(zeros.bool)){
+  # extract total number of cells with ones and zeros in the boolean vector
+  boolvals <- boolval[!is.na(boolval)]
+  ones.bool <- sum(as.bit(boolvals))
+  zeros.bool <- length(boolvals) - ones.bool
+}
+
+# generic function for crosstabing two boolean vectors
+func_logical3   <- function(v1,v2){
+  r1  <- sum(v1 & v2)
+  r2  <- sum(v1 & !v2)
+  return(c(r1, r2))
+}
+
+#generic function for calculating the baisc table
+func_calculateTable1 <- function(boolval,indval,ones.bool,zeros.bool,newThres){
+  zeroIndVal <- indval*0
+
+  # create results data.frame
+  res <- cbind(newThres, "Hits"=0, "HitsRate"=0, "falseAlarms"=0, "falseAlarmsRate"=0)
+
+  # loop for reclassifying the index vector for each new threshold
+  # and then perform the crosstab with the boolean vector
+
+  for (j in 2:(nrow(res))){
+    i <- newThres[j]
+    zeroIndVal[which(indval == i)]  <- 1
+
+    xb <- as.bit(zeroIndVal)
+    yb <- as.bit(boolval)
+    crsstb <- func_logical3(xb,yb)
+
+    res[j,"Hits"] <- crsstb[1]+res[j-1,"Hits"]
+    res[j,"HitsRate"] <- res[j,"Hits"]/ones.bool*100
+    res[j,"falseAlarms"] <- crsstb[2]+res[j-1,"falseAlarms"]
+    res[j,"falseAlarmsRate"] <- res[j,"falseAlarms"]/zeros.bool*100
+    zeroIndVal <- indval*0
+
+    if(progress){
+      pb <- txtProgressBar(min = 0, max = 100, style = 3)
+      setTxtProgressBar(pb, round(j/nrow(res)*100, 0))
+    }
+  }
+  res[nrow(res),]<-c(newThres[length(newThres)], ones.bool, 100, zeros.bool, 100)
+  tocd <- as.data.frame(res)
+
+  return(tocd)
+}
+
+#generic function for calculating the baisc table
+func_calculateTable2 <- function(boolval,indval,ones.bool,zeros.bool,newThres){
+  zeroIndVal <- indval*0
+
+  # create results data.frame
+  res <- cbind(newThres, "Hits"=0, "HitsRate"=0, "falseAlarms"=0, "falseAlarmsRate"=0)
+
+  # loop for reclassifying the index vector for each new threshold
+  # and then perform the crosstab with the boolean vector
+
+  for (j in 2:(nrow(res))){
+    i <- newThres[j]
+    zeroIndVal[which(indval >= i)]  <- 1
+
+    xb <- as.bit(zeroIndVal)
+    yb <- as.bit(boolval)
+    crsstb <- func_logical3(xb,yb)
+
+    res[j,"Hits"] <- crsstb[1]+res[j-1,"Hits"]
+    res[j,"HitsRate"] <- crsstb[1]/ones.bool*100
+    res[j,"falseAlarms"] <- crsstb[2]+res[j-1,"falseAlarms"]
+    res[j,"falseAlarmsRate"] <- crsstb[2]/zeros.bool*100
+    zeroIndVal <- indval*0
+
+    if(progress){
+      pb <- txtProgressBar(min = 0, max = 100, style = 3)
+      setTxtProgressBar(pb, round(j/nrow(res)*100, 0))
+    }
+  }
+  res[nrow(res),]<-c(newThres[length(newThres)], ones.bool, 100, zeros.bool, 100)
+  tocd <- as.data.frame(res)
+
+  return(tocd)
+}
+
+#generic function for calculating the baisc table
+func_calculateTable3 <- function(boolval,indval,ones.bool,zeros.bool,newThres){
+  zeroIndVal <- indval*0
+
+  # create results data.frame
+  res <- cbind(newThres, "Hits"=0, "HitsRate"=0, "falseAlarms"=0, "falseAlarmsRate"=0)
+
+  # loop for reclassifying the index vector for each new threshold
+  # and then perform the crosstab with the boolean vector
+
+  for (j in 2:(nrow(res))){
+    i <- newThres[j]
+    zeroIndVal[which(indval <= i)]  <- 1
+
+    xb <- as.bit(zeroIndVal)
+    yb <- as.bit(boolval)
+    crsstb <- func_logical3(xb,yb)
+
+    res[j,"Hits"] <- crsstb[1]+res[j-1,"Hits"]
+    res[j,"HitsRate"] <- crsstb[1]/ones.bool*100
+    res[j,"falseAlarms"] <- crsstb[2]+res[j-1,"falseAlarms"]
+    res[j,"falseAlarmsRate"] <- crsstb[2]/zeros.bool*100
+    zeroIndVal <- indval*0
+
+    if(progress){
+      pb <- txtProgressBar(min = 0, max = 100, style = 3)
+      setTxtProgressBar(pb, round(j/nrow(res)*100, 0))
+    }
+  }
+  res[nrow(res),]<-c(newThres[length(newThres)], ones.bool, 100, zeros.bool, 100)
+  tocd <- as.data.frame(res)
+
+  return(tocd)
+}
+
+# extract only no NA values from the boolean and index vectors
+# length of (not NA) boolean and index vectors must be equal as the mask was applied previously
+if(any(ls()=='boolvals')){
+  boolval <- boolvals
+} else{
+  boolval <- boolval[!is.na(boolval)]
+}
+
+indval <- indval[!is.na(indval)]
+
+if (length(boolval)!=length(indval)) {stop("different NA values in input maps")}
+
+maxInd <- max(indval, na.rm=TRUE)
+uniqInd <- unique(indval)
+
+
+# define the thresholds vector
+ifelse(!is.null(thres),
+       {newThres <- thres; minInd <- min(thres);},
+       minInd <- min(indval, na.rm=TRUE))
+
+ifelse(!is.null(nthres),
+       newThres <- (maxInd - minInd)/(nthres-2)*(0:(nthres-2)) + minInd,
+       ifelse(!is.null(thres),
+              {newThres <- thres;},
+              newThres <- uniqInd))
+
+# define the thresholds vector
+if(is.null(Increment) & (!is.null(FirstThres) | !is.null(LastThres))){
+
+  if(!is.null(FirstThres)){
+    if(FirstThres>min(uniqInd, na.rm=TRUE) & FirstThres < max(uniqInd, na.rm=TRUE)){
+      newThres <- newThres[newThres>=FirstThres]
+      newThres <- c(0,newThres)
+    }
+  }
+
+  if(!is.null(LastThres)){
+    if(LastThres<max(uniqInd, na.rm=TRUE) & LastThres > min(uniqInd, na.rm=TRUE)){
+      newThres <- newThres[newThres<=LastThres]
+      newThres <- c(newThres,maxInd)
+    }
+  }
+
+}else if(!is.null(Increment)){
+
+  if(!is.null(FirstThres)){
+    if(FirstThres>min(uniqInd, na.rm=TRUE) & FirstThres < max(uniqInd, na.rm=TRUE)){
+      minInd1=FirstThres
+    }else{
+      minInd1=min(indval, na.rm=TRUE)
+    }
+  }else{
+    minInd1=min(newThres, na.rm=TRUE)
+  }
+
+  if(!is.null(LastThres)){
+    if(LastThres<max(uniqInd, na.rm=TRUE) & LastThres > min(uniqInd, na.rm=TRUE)){
+      maxInd1=LastThres
+    }else{
+      maxInd1=max(indval, na.rm=TRUE)
+    }
+  }else{
+    maxInd1=max(newThres, na.rm=TRUE)
+  }
+
+  #a vector of even numbers
+  newThres <- seq(minInd1, maxInd1, by=Increment) # Explicitly specifying "by" only to increase readability
+  newThres <- c(0,newThres,maxInd)
+
+}
+
+if(ordinal){
+  x <- unique()
+  # get all combination
+  possible <- gtools::permutations(n=length(uniqInd),r=length(uniqInd),v=uniqInd,repeats.allowed=T)
+}
+
+if(any(is.element(newThres, uniqInd)==FALSE) & sort=='DECREASE'){
+
+  newThres <- sort(newThres, decreasing=TRUE)
+  newThres <- c(NA,newThres)
+  tocd <- func_calculateTable2 (boolval,indval,ones.bool,zeros.bool,newThres)
+
+}else if(any(is.element(newThres, uniqInd)==FALSE) & sort=='INCREASE'){
+
+  newThres <- sort(newThres, decreasing=FALSE)
+  newThres <- c(NA,newThres)
+  tocd <- func_calculateTable3 (boolval,indval,ones.bool,zeros.bool,newThres)
+
+}else if(!is.null(thres) & is.null(nthres) & length(newThres)==length(uniqInd)){
+
+  newThres <- c(NA,newThres)
+  tocd <- func_calculateTable1 (boolval,indval,ones.bool,zeros.bool,newThres)
+
+}else if(sort=='DECREASE'){
+
+  newThres <- sort(newThres, decreasing=TRUE)
+  newThres <- c(NA,newThres)
+  tocd <- func_calculateTable2 (boolval,indval,ones.bool,zeros.bool,newThres)
+
+}else if(sort=='INCREASE'){
+
+  newThres <- sort(newThres, decreasing=FALSE)
+  newThres <- c(NA,newThres)
+  tocd <- func_calculateTable3 (boolval,indval,ones.bool,zeros.bool,newThres)
+
+}
+
+if(!thresorder){
+  tocd$slops <- (tocd$Hits-append(tocd$Hits[1:(length(tocd$Hits)-1)], 0, after = 0)) / (tocd$Hits+tocd$falseAlarms - append(tocd$falseAlarms[1:(length(tocd$falseAlarms)-1)], 0, after = 0)-append(tocd$Hits[1:(length(tocd$Hits)-1)], 0, after = 0))
+  sort(tocd$slops, decreasing=TRUE)
+  tocdd <- tocd[order(-tocd$slops),]
+  newThres <- tocdd$newThres[1:length(tocdd$newThres)-1]
+  newThres <- c(NA,newThres)
+  tocd <- func_calculateTable (boolval,indval,ones.bool,zeros.bool,newThres)
+
+}
+
+
+names(tocd) <- c("Threshold", "A", "HitsRate", "B", "falseAlarmsRate")
+
+# calculate ROC table as shown in TOCfigure1.xlsx created by Pontius
+tocd$Model1 <- tocd$HitsRate/100
+tocd$falseAlarms1 <- tocd$falseAlarmsRate/100
+tocd$Uniform <- tocd$falseAlarms1
+
+# calculate additional columns for toc
+maxA <- tocd$A[nrow(tocd)]
+maxB <- tocd$B[nrow(tocd)]
+tocd$m <- (maxA - tocd$A)/(maxA + maxB)
+tocd$h <- tocd$A/(maxA + maxB)
+tocd$f <- tocd$B/(maxA + maxB)
+tocd$c <- 1 - tocd$m - tocd$h -tocd$f
+prevalence <- tocd$h[nrow(tocd)]
+
+tocd$Hits <- tocd$Model1 * prevalence * population
+tocd$hitsFalseAlarms <- tocd$Hits + tocd$falseAlarms1*(1-prevalence)*population
+tocd$hitsMisses <- prevalence*population
+tocd$maximum <- pmin(tocd$hitsMisses, tocd$hitsFalseAlarms)
+tocd$minimum <- pmax(0, tocd$hitsFalseAlarms + tocd$hitsMisses - population)
+tocd$Uniform1 <- tocd$hitsMisses * tocd$hitsFalseAlarms / population
+
+tocd1 <- tocd
+#tocd1[nrow(tocd1), "Threshold"] <- paste("<= ", minInd)
+
+tocd2 <- tocd1[, c("Threshold", "hitsFalseAlarms", "Hits")]
+
+# adjustment to population if user provides P and Q
+if(!is.na(P) & !is.na(Q)){
+  tocd1$hitsFalseAlarmsP <- P * tocd1$Model1 + Q * tocd1$falseAlarms1
+  tocd1$HitsP <- P * tocd1$Model1
+  tocd2 <- tocd1[, c("Threshold", "hitsFalseAlarms", "Hits", "hitsFalseAlarmsP", "HitsP")]
+}
+
+# calculate totalAUC in data units and AUC as a proportion
+id <- order(tocd2$hitsFalseAlarms)
+totalAUC <- sum(tocd2$Hits[-length(tocd2$Hits)] * diff(tocd2$hitsFalseAlarms)) +
+  sum(diff(tocd2$hitsFalseAlarms[id])*diff(tocd2$Hits[id]))/2 - ((prevalence * population)^2)/2
+
+AUC <- totalAUC/(population * prevalence * population - (prevalence * population)^2)
+
+colnames(tocd2)[2] <- "Hits+FalseAlarms"
+if (any(colnames(tocd2) == "hitsFalseAlarmsP")) colnames(tocd2)[4] <- "Hits+FalseAlarmsP"
+
+# calculate uncertainty
+if(!is.null(mask)) index <- index*mask
+uncertain <- uncertainty(index, tocd, sort=sort)
+
+tocd3 <- tocd1[, c("Threshold", "Hits", "hitsFalseAlarms")]
+tocd3$Diff <- tocd2$Hits[length(tocd2$Hits)] - tocd3$hitsFalseAlarms
+
+tocd3[nrow(tocd3)+1,] <- c(0,0,tocd2$Hits[length(tocd2$Hits)],0)
+
+tocd4 <- tocd3[sort.list(tocd3$Diff),]
+
+slope <- (tocd4$Hits[which(tocd4$Diff==0)+1]-tocd4$Hits[which(tocd4$Diff==0)-1])/(tocd4$hitsFalseAlarms[which(tocd4$Diff==0)+1]-tocd4$hitsFalseAlarms[which(tocd4$Diff==0)-1])
+b <- tocd4$Hits[which(tocd4$Diff==0)+1] - slope*tocd4$hitsFalseAlarms[which(tocd4$Diff==0)+1]
+tocd4$Hits[which(tocd4$Diff==0)] <- slope*tocd2$Hits[length(tocd2$Hits)]+b
+tocd4$Threshold[which(tocd4$Diff==0)] <- ((tocd4$Threshold[which(tocd4$Diff==0)+1]-tocd4$Threshold[which(tocd4$Diff==0)-1])/(tocd4$hitsFalseAlarms[which(tocd4$Diff==0)+1]-tocd4$hitsFalseAlarms[which(tocd4$Diff==0)-1]))*(tocd4$hitsFalseAlarms[which(tocd4$Diff==0)]-tocd4$hitsFalseAlarms[which(tocd4$Diff==0)+1])+tocd4$Threshold[which(tocd4$Diff==0)+1]
+
+#new("Toc", table=tocd2, prevalence=prevalence*population, population=population, units=units, AUC=AUC,
+#    maxAUC = AUC + uncertain/2, minAUC = AUC - uncertain/2,CorrectCorner = tocd4[(which(tocd4$Diff==0)),1:3])
+CorrectCorner = tocd4[(which(tocd4$Diff==0)),1:3]
+#tocd4[(which(tocd4$Diff==0)-1):(which(tocd4$Diff==0)+1),]
+
+labelThres=FALSE
+modelLeg="Model"
+digits=3
+nticks=5
+digitsL=1
+posL = NULL
+offsetL = 0.5
+addAUC = TRUE
+digitsAUC=2
+addCC = TRUE
+
+old.opt <- options()
+options(digits=digits)
+old.par <- par(no.readonly = TRUE)
+par(oma = c(0, 0, 0, 4))
+par(mgp = c(1.5, 1, 0))
+
+if((!is.null(tocd$HitsP) & !is.null(tocd$"Hits+FalseAlarmsP"))==TRUE){
+  tocd$Hits <- tocd$HitsP
+  tocd$"Hits+FalseAlarms" <- tocd$"Hits+FalseAlarmsP"
+}
+
+graphics::plot(c(0, population*(1-prevalence), population), c(0, 0, prevalence * population), type="l", lty="dashed",
+               xlab=paste0("Hits+False Alarms (", units, ")"), ylab=paste0("Hits (", units, ")"),
+               lwd=2, col=rgb(128,100,162, maxColorValue=255), bty="n", xaxt="n", yaxt="n", xlim=c(0, population),
+               ylim=c(0, prevalence * population), asp=1/prevalence)
+
+xlabels <- c(0, format((1:nticks)*population/nticks, digits))
+ylabels <- c(0, format((1:nticks)*prevalence * population/nticks, digits))
+
+axis(1, pos = 0, labels=xlabels, at=xlabels, xaxp = c(0, population, nticks), cex.axis=0.9)
+axis(2, pos = 0, labels=ylabels, at=ylabels, yaxp = c(0, prevalence * population, nticks), cex.axis=0.9)
+
+
+# maximum
+lines(c(0, prevalence * population, population), c(0, prevalence * population, prevalence * population),
+      lty="dotdash", lwd=2, col=rgb(79,129,189, maxColorValue=255))
+
+# hits+misses
+lines(c(0, population), rep(prevalence*population, 2), lwd=3, col=rgb(146,208,80, maxColorValue=255))
+
+# uniform
+lines(c(0, population), c(0, prevalence*population), lty="dotted", lwd=2, col=rgb(0,0,255, maxColorValue=255))
+
+#lines(tocd$"Hits+FalseAlarms", tocd$maximum, lty="dotdash", lwd=2, col=rgb(79,129,189, maxColorValue=255))
+
+# model
+lines(tocd$hitsFalseAlarms, tocd$Hits, lwd=2, col=rgb(255,0,0, maxColorValue=255))
+points(tocd$hitsFalseAlarms, tocd$Hits, pch=17, col=rgb(255,0,0, maxColorValue=255))
+if(labelThres == TRUE) text(tocd$"Hits+FalseAlarms", tocd$Hits, round(as.numeric(tocd$Threshold), digitsL), pos = posL, offset = offsetL)
+
+if(addCC){
+  lines(c(CorrectCorner$hitsFalseAlarms,CorrectCorner$hitsFalseAlarms), c(0,prevalence * population), lty="dashed", lwd=1, col=rgb(0,0,255, maxColorValue=255))
+  lines(c(CorrectCorner$Hits,CorrectCorner$Hits+(1-prevalence)*population), c(CorrectCorner$Hits,CorrectCorner$Hits), lty="dashed", lwd=1, col=rgb(0,0,255, maxColorValue=255))
+  points(CorrectCorner$hitsFalseAlarms, CorrectCorner$Hits, pch=3,cex = 3, col=rgb(255,0,0, maxColorValue=255))
+  }
+
+par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+graphics::plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+
+legend("right", c("Hits+Misses", "Maximum", modelLeg, "Uniform", "Minimum"),
+       col = c(rgb(146,208,80, maxColorValue=255), rgb(79,129,189, maxColorValue=255), rgb(255,0,0, maxColorValue=255), rgb(0,0,255, maxColorValue=255), rgb(128,100,162, maxColorValue=255)),
+       lty = c(1, 4, 1, 3, 2), pch = c(NA, NA, 17, NA, NA),
+       merge = TRUE, bty="n", lwd=c(3, 2, 2, 2, 2))
+par(old.par)
+options(old.opt)
+
+if(addAUC){text(0.6,0.1,paste("AUC: ",round(as.numeric(AUC), digitsAUC)),adj = c(0,1))}

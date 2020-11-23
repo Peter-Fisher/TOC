@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1576359583929.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1435505930",
+    "id" : "A2196EBE",
+    "lastKnownWriteTime" : 1575233120,
+    "last_content_update" : 1575233120,
+    "path" : "D:/TOC/TOC/man/uncertainty.Rd",
+    "project_path" : "man/uncertainty.Rd",
+    "properties" : {
+        "cursorPosition" : "17,14",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 11,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_doc"
+}

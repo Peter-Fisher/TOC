@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1577930092287.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4043285353",
+    "id" : "F5B1482A",
+    "lastKnownWriteTime" : 1577569612,
+    "last_content_update" : 1577569612,
+    "path" : "D:/TOC/TOC/R/plotsROC.R",
+    "project_path" : "R/plotsROC.R",
+    "properties" : {
+        "cursorPosition" : "47,133",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,26 @@
+file format : IDRISI Raster A.1
+file title  : 
+data type   : byte
+file type   : binary
+columns     : 337
+rows        : 422
+ref. system : plane
+ref. units  : m
+unit dist.  : 1.0000000
+min. X      : 399070.9394420
+max. X      : 1747070.9394420
+min. Y      : -1214376.6000527
+max. Y      : 473623.3999473
+pos'n error : unknown
+resolution  : unknown
+min. value  : 0
+max. value  : 2
+display min : 0
+display max : 2
+value units : unspecified
+value error : unknown
+flag value  : -9999
+flag def'n  : missing data
+legend cats : 0
+lineage     : This file was created by CONTRACT with the command line: 
+lineage     : 1*1*C:\amsantac\other\git\TOC\inst\external\Change_Map2b.rst*C:\amsantac\PhD\Research\dissertation\data\selva\Change_Map2b.rst*1*4*4

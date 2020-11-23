@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1577930789450.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3680575283",
+    "id" : "E891FBE6",
+    "lastKnownWriteTime" : 1576357693,
+    "last_content_update" : 1576357693,
+    "path" : "D:/TOC/TOC/R/roctable.R",
+    "project_path" : "R/roctable.R",
+    "properties" : {
+        "cursorPosition" : "4,21",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

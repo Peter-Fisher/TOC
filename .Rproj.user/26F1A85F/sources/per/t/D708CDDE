@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1577562448465.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "359581021",
+    "id" : "D708CDDE",
+    "lastKnownWriteTime" : 1577564212,
+    "last_content_update" : 1577564211902,
+    "path" : "F:/Semester_1/GIS_MAP_Comparison/Final_Project/InnerProcess_ROC.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "449,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
