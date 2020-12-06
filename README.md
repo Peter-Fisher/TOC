@@ -119,7 +119,7 @@ plot(tocd, cex=0.8, posL=4, addCC = TRUE, labelThres = TRUE, digitsAUC = 4)
 plot(c(tocd1,tocd2), cex=0.8, posL=4,addCC = TRUE, digitsAUC=4)
 ```
 
-![image-20201206104150039](imgs\TOC_MultiPlot.png)
+![TOC_MultiPlot](imgs\TOC_MultiPlot.png)
 
 ## References
 
