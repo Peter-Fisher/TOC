@@ -2,14 +2,14 @@
 
 # TOC curve R Package 0.0.5
 
-* [**TOC curve introduction**](#TOC curve introduction)
-* [**Package download and installation**](#Package download and installation)
-* [**Improvement**](#Improvement from  [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html))
-* [**Package usage**](#Package usage)
+* [**TOC curve introduction**](#TOC_curve_introduction)
+* [**Package download and installation**](#Package_download_and_installation)
+* [**Improvement**](#Improvement_from_[TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html))
+* [**Package usage**](#Package_usage)
 * [**Examples**](#Examples)
 * [**References**](#References)
 
-## TOC curve introduction
+## TOC_curve_introduction
 
 The **total operating characteristic (TOC)** is a statistical method to compare a Boolean variable versus a rank variable. It is a modified model of **receiver operating characteristic (ROC)** that shows more quantitative information.
 
@@ -21,7 +21,7 @@ TOC is applicable to measure diagnostic ability in many fields including but not
 
 Wikipedia Link: https://en.wikipedia.org/wiki/Total_operating_characteristic#cite_note-Si-1
 
-## Package download and installation
+## Package_download_and_installation
 
 ### Install package from GitHub
 
@@ -65,14 +65,14 @@ Import TOC package:
 library('TOC')
 ```
 
-## Improvement from  [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html)
+## Improvement_from_[TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html)
 
 - Labels of thresholds are now in the right place. 
 - Give an option for users to sort the thresholds upward or downward.
 - Input parameter `thres` can modify threshold.
 - Allow users to plot multiple curves into the same image and easily compare.
 
-## Package usage
+## Package_usage
 
 ### New Input parameters for TOC usage:
 
