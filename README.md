@@ -1,9 +1,9 @@
 # TOC curve R Package 0.0.5
 
-* [**TOC curve introduction**](#TOC curve introduction) 
+* [**TOC curve introduction**](#TOC curve introduction)
 * [**Package download and installation**](#Package download and installation)
 * [**Improvement**](#Improvement from  [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html))
-* [**Package usage**](#Package usage))
+* [**Package usage**](#Package usage)
 * [**References**](#References)
 
 ## TOC curve introduction
