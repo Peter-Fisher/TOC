@@ -1,11 +1,12 @@
 # TOC curve R Package 0.0.5
 
-* **What is TOC curve?** 
-* **Package download and installation**
-* **Package utile**
-* **Modify and Improvement**  
+* [**TOC curve introduction**](#TOC curve introduction) 
+* [**Package download and installation**](#Package download and installation)
+* [**Improvement**](#Improvement from  [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html))
+* [**Package usage**](#Package usage))
+* [**References**](#References)
 
-## What is TOC curve?
+## TOC curve introduction
 
 The **total operating characteristic (TOC)** is a statistical method to compare a Boolean variable versus a rank variable. It is a modified model of **receiver operating characteristic (ROC)** that shows more quantitative information.
 
