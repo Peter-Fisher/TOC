@@ -7,9 +7,11 @@
 
 ## What is TOC curve?
 
-The **total operating characteristic (TOC)** is a [statistical method](https://en.wikipedia.org/wiki/Statistical_method) to compare a [Boolean variable](https://en.wikipedia.org/wiki/Boolean_variable) versus a [rank variable](https://en.wikipedia.org/wiki/Rank_statistics). TOC can measure the ability of an index variable to diagnose either presence or absence of a characteristic. The diagnosis of presence or absence depends on whether the value of the index is above a threshold. TOC considers multiple possible thresholds. Each threshold generates a two-by-two [contingency table](https://en.wikipedia.org/wiki/Contingency_table), which contains four entries: hits, misses, false alarms, and correct rejections.[[1\]](https://doi.org/10.1080%2F13658816.2013.862623)
+The **total operating characteristic (TOC)** is a statistical method to compare a Boolean variable versus a rank variable. It is a modified model of **receiver operating characteristic (ROC)** that shows more quantitative information.
 
-The [receiver operating characteristic](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) (ROC) also characterizes diagnostic ability, although ROC reveals less information than the TOC. For each threshold, ROC reveals two ratios, hits/(hits + misses) and false alarms/(false alarms + correct rejections), while TOC shows the total information in the contingency table for each threshold.[[2\]](https://doi.org/10.1007%2Fs10980-013-9984-8) The TOC method reveals all of the information that the ROC method provides, plus additional important information that ROC does not reveal, i.e. the size of every entry in the contingency table for each threshold. TOC also provides the popular [area under the curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) (AUC) of the ROC.
+TOC can measure the ability of an index variable to diagnose either presence or absence of a characteristic. The diagnosis of presence or absence depends on whether the value of the index is above a threshold. TOC considers multiple possible thresholds. Each threshold generates a two-by-two [contingency table](https://en.wikipedia.org/wiki/Contingency_table), which contains four entries: hits, misses, false alarms, and correct rejections.[[1\]](https://doi.org/10.1080%2F13658816.2013.862623)
+
+The [receiver operating characteristic](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) (ROC) also characterizes diagnostic ability. For each threshold, ROC reveals two ratios, hits/(hits + misses) and false alarms/(false alarms + correct rejections), while TOC shows the total information in the contingency table for each threshold.[[2\]](https://doi.org/10.1007%2Fs10980-013-9984-8) 
 
 TOC is applicable to measure diagnostic ability in many fields including but not limited to: land change science, [medical imaging](https://en.wikipedia.org/wiki/Medical_imaging), [weather forecasting](https://en.wikipedia.org/wiki/Weather_forecasting), [remote sensing](https://en.wikipedia.org/wiki/Remote_sensing), and [materials testing](https://en.wikipedia.org/wiki/Materials_testing).
 
@@ -59,15 +61,12 @@ Import TOC package:
 library('TOC')
 ```
 
-## Modify and Improvement
+## Improvement from  [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html)
 
-•Labels of threshold are now in the right place. 
-
-•Give an option for users to sort the thresholds upward or downward.
-
-•Thresholds can be modified by input parameter `thres`.
-
-•Allowed user to plot multiple curves into a same image and easily compare.
+- Labels of thresholds are now in the right place. 
+- Give an option for users to sort the thresholds upward or downward.
+- Input parameter `thres` can modify threshold.
+- Allow users to plot multiple curves into the same image and easily compare.
 
 ## Package usage
 
