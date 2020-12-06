@@ -1,9 +1,12 @@
+
+
 # TOC curve R Package 0.0.5
 
 * [**TOC curve introduction**](#TOC curve introduction)
 * [**Package download and installation**](#Package download and installation)
 * [**Improvement**](#Improvement from  [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html))
 * [**Package usage**](#Package usage)
+* [**Examples**](#Examples)
 * [**References**](#References)
 
 ## TOC curve introduction
@@ -96,19 +99,27 @@ library('TOC')
 
 
 
-Example:
+## Examples
 
 ```R
 rocd <- ROC(index1, boolean, mask, NAval=0, FirstThres = 10000, LastThres = 50000, Increment = 5000, sort='DECREASE')
 plot(rocd, cex=0.8, posL=4)
+```
 
+<img src="imgs\ROC_Example1.png" alt="image-20201205221843174" style="zoom: 80%;" />
+
+```R
 tocd <- TOC(Prob_Map2, Change_Map2b, MASK4, NAval=0, FirstThres = 10000, LastThres = 50000, Increment = 5000, sort='DECREASE')
 plot(tocd, cex=0.8, posL=4, addCC = TRUE, labelThres = TRUE, digitsAUC = 4)
 ```
 
-<img src="imgs\ROC_Example1.png" alt="image-20201205221843174" style="zoom: 80%;" /><img src="imgs\TOC_Example1.png" alt="TOC_Example1" style="zoom: 80%;" />
+<img src="imgs\TOC_Example1.png" alt="TOC_Example1" style="zoom: 80%;" />
 
+```R
+plot(c(tocd1,tocd2), cex=0.8, posL=4,addCC = TRUE, digitsAUC=4)
+```
 
+![image-20201206104150039](imgs\TOC_MultiPlot.png)
 
 ## References
 
