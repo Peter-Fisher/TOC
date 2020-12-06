@@ -4,7 +4,7 @@
 
 * [**TOC curve introduction**](#TOC_curve_introduction)
 * [**Package download and installation**](#Package_download_and_installation)
-* [**Improvement**](#Improvement_from_[TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html))
+* [**New features**](#New_features)
 * [**Package usage**](#Package_usage)
 * [**Examples**](#Examples)
 * [**References**](#References)
@@ -65,7 +65,9 @@ Import TOC package:
 library('TOC')
 ```
 
-## Improvement_from_[TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html)
+## New_features
+
+This package is improved from [TOC_0.0-5](https://cran.r-project.org/web/packages/TOC/index.html)
 
 - Labels of thresholds are now in the right place. 
 - Give an option for users to sort the thresholds upward or downward.
